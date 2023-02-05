@@ -1,0 +1,172 @@
+###############################################################################
+# Setting up an SSH server
+###############################################################################
+    1.) Install and setup a SSH server: sudo apt-get install openssh-server ii
+    https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows
+
+    2.) To start/stop/status your server, enter:
+        sudo service ssh <start/stop/status>
+
+    3.) Configure your software firewall to allow incomming access from sshd. 
+
+    4.) Test to see if a port is open using 'telnet' (telnet <IP> <port>):
+            telnet 192.168.0.9 22
+        This works with both LAN and internet IPs.
+
+    5.) (Optional) You can (should) set which port SSH uses. The default is 22
+        but there are hacker bots crawling the internet that you don't want to
+        fall prey to. Open: 
+
+            sudo gedit /etc/ssh/sshd_config
+
+        There should be a commented out line "Port 22". Under that, enter "Port 
+        #####" to set a custom port number. Think of it as a pin number. 
+        Re-test connection. Any time you edit this file, you must restart the
+	    server in order for the changes to take effect:
+
+	    sudo service ssh restart
+
+    6.) Set port forwarding on your router's firewall if you want to connect to
+        games or SSH via the internet. Use the same port you set in step 5. 
+        Again, I would not leave this to default port 22. Games should be ok.
+        Any port number can be used, and the higher the number the better to 
+        deter hacker bots. Don't use a large range of ports, just a single or 
+        a few numbers. This will be used for both LAN and internet. Set the IP 
+        of the computer you want inbound requests forwarded to. 
+
+    7.) Set your computer to use a static IP, otherwise this whole setup will 
+        break if your computer restarts and gets assigned a different IP. In 
+        Mint, edit your IPv4 network settings. Change your 'Addresses' from 
+        (Automatic DHCP) to Manual. Enter the IP you want with a Netmask 
+        255.255.255.0. Your Gateway is probably 192.168.0.1 (your router's IP).
+
+        The below command string will display the users, when they last 
+        accessed, and for how long (BASH):
+
+            for user in `ls /home`; do 
+            echo -n "$user "; 
+            last $user | head -1 | awk '{print substr($0,40)}'; 
+            done
+
+###############################################################################
+# Setting/Configuring different user accounts.
+###############################################################################
+
+    To add a user, enter: "sudo adduser <username>".
+    You will be prompted for additional information about the user including a 
+    password. Once the user is created, it can be used to to ssh into your 
+    computer. You should set groups and permissions once created.
+
+###############################################################################
+# Connecting to a server via SSH/SFTP
+###############################################################################
+
+    You can ssh into a server using this command which comes 
+    pre-installed and on Linux and Windows machines:ssh <username>@<IP Address> 
+
+        ssh -XC -p 3911 someUser@24.56.118.254
+        
+        sftp -oPort=12345 jonny@192.168.0.9   
+
+    1.) ssh
+
+    SSH allows you to read, write and execute files (permissions pending). The
+    terminal will use the configuration of the host machine.    
+
+    The default sshd port number is 22, but you can (should) change it to
+    reduce risk. If you change the port, you will need to include it in the 
+    connection command as shown in the 2nd example above. For a sftp
+    connection, you will need the -oPort option:
+
+	sftp -oPort=<port number> <username>@<IP address>
+
+    The '-X' option allows the use of X11 display on the guest machine 
+    (opening programs outside of the terminal). The '-C' option triggers the
+    use of compression which speeds up the data transfer rate. Use it. 
+
+    If you are connecting via LAN, use the default 192.168.0.#. If you are 
+    connecting over the internet, you should connect to your net IP (search 
+    "What is my IP?" on Google).
+
+    2.) sftp - Secure File Transfer Protocol
+
+    This allows you to transfer files between the host and guest computers. To
+    download files using sftp, use the command: 
+ 
+        get <filename> <save location>
+
+    To upload files use:
+        put <filename>
+
+    Not specifying a save location will download to/upload from whatever 
+    directory you were in when you opened the sftp command. 
+
+###############################################################################
+# Set up additional security:
+###############################################################################
+	SSH leaves some major gaping holes in security. Shore them up by 
+	following the instructions on this website: 
+
+		https://phoenixnap.com/kb/linux-ssh-security
+
+	KEY-PAIR AUTHENTICATION: 
+	One of the things you should do is use KEY-PAIR AUTHENTICATION and 
+	disable account password logins. 
+
+	Key-pair authentication is when a client computer generates an 
+	encryption algorithim (a public key), and the means to decipher it (
+	private key). The client requests access to the server by giving it the
+	public key and requesting the server to use it to generate an encrypted
+	message and send it back. Once the client deciphers the message and 
+	returns it to the server, the server know that the client is who they
+	claim to be and allows access. 
+
+	To generate a private key, enter the command:
+
+		ssh-keygen –t rsa -b 4096
+
+	This will create keys in /home/<user>/.ssh folder. This command works on
+    the Windows command line as well. If you are prompted to enter the name of 
+    the key file, leave it blank and it will default to 'id_rsa'. Giving it a
+    non-default name will usually not allow you to connect. After generating 
+    keys, send them to the server using the command:
+
+		ssh-copy-id -i id_rsa -p <port> <username>@<IP address>
+
+    This command does not work on the Windows command line, but you can make
+    a function for it: 
+
+        function ssh-copy-id([string]$userAtMachine){   
+            $publicKey = "$ENV:USERPROFILE" + "/.ssh/id_rsa.pub"
+            if (!(Test-Path "$publicKey")){
+                Write-Error "ERROR: failed to open ID file '$publicKey': No such file"            
+            }
+            else {
+                & cat "$publicKey" | ssh -p <port> $userAtMachine "umask 077; 
+                test -d .ssh || mkdir .ssh; 
+                cat >> .ssh/authorized_keys || exit 1"      
+            }
+        }
+
+    Don't forget to:
+        * Replace <port> with the actual port number. 
+        * Make sure you are in the correct directory (c:\Users\<username>\.ssh\).
+        * Make sure your public key name matches line 2 "id_rsa" (".pub" auto generates).
+        * When you execute the function fill in <user>@<ip address> below.
+
+    Execute with:
+    
+        ssh-copy-id user@machine
+
+	You will get some confirmation messages. Attempt to SSH in as normal.
+	It will prompt you for your passphrase. After gaining access, you will
+	never again be prompted for your account password. 
+
+	Once this process is complete, you may disable password logins by 
+	editing the /etc/ssh/sshd_config file and setting 
+	"PasswordAuthentication_no". Note that this will lock out anyone trying
+	to access the server without the key-pair already set up, even if they
+	are attempting to set up key-pairing for the first time. Make sure to 
+	restart the ssh server after making changes to this file:
+
+		sudo service ssh restart

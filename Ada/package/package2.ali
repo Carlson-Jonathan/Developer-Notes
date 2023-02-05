@@ -1,0 +1,17 @@
+V "GNAT Lib v7"
+P ZX
+
+RN
+
+U package2%b		package2.adb		25c75fff NE OO PK IL KM
+
+U package2%s		package2.ads		aa7c25c3 EE NE OO PK IL
+
+D package2.ads		20210605154241 aa7c25c3 package2%s
+D package2.adb		20210605154231 8fbb7a3c package2%b
+D system.ads		20170510173650 4635ec04 system%s
+X 1 package2.ads
+1K9*package2 3l5 3e13 2|1b14 6l5 6t13
+2V14*Triple2{integer} 2>22 2|2b14 5l9 5t16
+2i22 Var{integer} 2|2b22 4r16
+

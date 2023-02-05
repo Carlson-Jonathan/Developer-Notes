@@ -1,0 +1,33 @@
+In 08/2021 GitHub screwed up access so you can no longer use your 
+GitHub web login credentials to push using Git. Instead you need
+a personal access key which is generated on their website 
+similar to how an SSH key-pair authentication works. To get your
+key, log into your online GitHub account, then click your picture, 
+click "settings", then "Developer Settings", then "Personal 
+access tokens". Use this tool to generate your key. 
+
+When you push, Git will ask you for your credentials, same as
+always, except you will use your key instead of your password.
+
+You can use the GitHub client to automatically enter your key
+for you when you want to push so you dont have to go through the
+hassel of copying and pasting your key every time.
+
+Copy and paste the below to install the gh client if you don't
+have it already:
+
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+
+Once installed, enter the command in the terminal to configure
+your github client with your credentials:
+   gh auth login
+
+You will receive prompts that you can use the arrow keys to
+select. Eventually, it will ask you if you want to paste in your
+key. Do that and you should be able to push without entering 
+credentials ever again. 
+
+My current GitHub push key: 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

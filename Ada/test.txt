@@ -1,0 +1,4 @@
+I am outputting a line to a file.
+It works with either 'PUT' function and 'New_Line'.
+
+This defaults all outputs to the file instead of the screen.

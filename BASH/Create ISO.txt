@@ -1,0 +1,2 @@
+Create an iso from a disc: 
+    dd if=/dev/sr0 of=dragonquest8.iso

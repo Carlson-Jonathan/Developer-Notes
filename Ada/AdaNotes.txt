@@ -1,0 +1,741 @@
+PRINT COMMAND: 
+    Put()       - param1: output, optional param2: column width (aligns right)
+    Put_Line()  - Same as Put(), but auto-includes a '\n' at the end.
+    New_Line;   - Inserts a blank line. Add at parameter for extra lines: 'NewLine(4)'
+
+--------------------------------------------------------------------------------
+TYPES
+    There are 4 kinds of data types in Ada:
+        PREDEFINED - Provided by the compiler. Built-in types.    
+            Type        Memory usage        Range
+            INTEGER     32 bits             -2147483648 to 2147483647
+            NATURAL     31 bits             0 to 2147483647
+            POSITIVE    31 bits             1 to 2147483647
+            FLOAT
+            CHARACTER
+            STRING
+            
+            Integers and floats can be 'long' or 'short'.
+
+        USER DEFINED - When a user creates a custom type.
+            (Custom)    Depends on range    User specified
+
+        These types are unique and no user defined type will work with a normal
+        type, even if it is defined the exact same way. There must be conversions
+        done if you want to do math or whatever. 
+
+            type <type-name> is range <lower-limit>..<upper-limit>;
+
+        DERIVED - Defined in part based on a previously defined type. These are
+        unique to Ada and not found in most other languages. This is kinda like a
+        child class that inherit its parent properties, but has additional limitations.
+        Any operation legal on the parent is also legal on the child. The key to a 
+        derived type is the use of the reserved word new along with the type from which 
+        the new type will be derived. 
+
+           type <type-name> is new <existing-type>; 
+        
+        SUBTYPES - A subset of another type. Basically the same as a derived type
+        but they can interact with other subtypes of the same type whereas 
+        derived types cannot.
+
+    Types can be changed to other types through typecasting INTEGER(SomeVariable).
+    Keep in mind, that you cannot use user defiend typed with normal Ada functions
+    without first casting them to a non-custom type.
+    Example of a derived type of a subtype of an INTEGER:
+
+       type NEW_INT         is new INTEGER range 12..127;
+       subtype NEW_SUBTYPE  is NEW_INT range 12..127;
+       type    DER_SUB      is new NEW_SUBTYPE range 12..32;
+
+Example code to inspect information about a data type:
+    Put("The type INTEGER uses "); Put(INTEGER'SIZE); Put(" bits of memory,");
+    Put(" and has a range from "); Put(INTEGER'FIRST); Put(" to "); Put(INTEGER'LAST);
+
+--------------------------------------------------------------------------------
+CUSTOM DATA TYPES
+    Custom types and subtypes can be declared such as integers that are restricted
+    to a specific range. Inlike regular integers, which restart at thier minimum
+    value when overflowed, range-specific integers will cause the program to 
+    except if there is a value assigned to them outside their specified range.
+        Examples: 
+            type MY_INT_TYPE is range -10_000..20_000;
+            subtype SUB_INT is INTEGER range 12..144;
+
+    Ada can auto-convert some similar data types in order to do math (Integer, 
+    Natural, Positive) but has a problem doing this with custom data types.
+
+    Another custom type example:
+        type DAY is (MON, TUE, WED, THU, FRI, SAT, SUN);
+    This is similar to array, but can use all of the operations of an integer
+    such as '</>/='. Additionally, it has properties of an array where you can
+    extract the index values with "Day'POS(THU)".
+    Other operators include "DAY'PRED(DAY)" (Predecessor), and "DAY'SUCC(DAY)" (successor).
+    Likewise you can use "DAY'FIRST" and "DAY'LAST".
+
+    Some custom data types with specified ranges can be iterated through using a
+    loop.
+
+    Example of creating a custom integer:
+        type MY_UNSIGNED_SHORT_INT is mod 65536;
+    Basically this creates a modulo that resets when it hit the limit. 
+    There are some pre-sets like "UNSIGNED_8", "UNSIGNED_16", ..._32 but you
+    need to include some package and they are limited to those numbers.
+
+--------------------------------------------------------------------------------
+ADA MATH
+    Operation     | Operator
+    -------------   ---------------
+    Addition        +
+    Subtraction     -
+    Multiplication  *
+    Division        \
+    Exponents       **
+    Modulo          keyword 'mod' or 'rem'
+
+--------------------------------------------------------------------------------
+GENERAL
+Ada is hard core strict with types. '1' does not equal 'TRUE, '0' not equal 'FALSE'.
+Example of Ada Boolean algebra (max of 2 boolean compares per parenthesis):
+    Put(TRUE and not ((TRUE and FALSE) or (TRUE xor FALSE)));
+
+Any combination of different keywords (and/or/xor), must be placed in parenthesis.
+Otherwise, you can write "TRUE and TRUE and FALSE and TRUE and FALE".
+This is probably a cleanroom technique to prevent human error with order of operations.
+
+Ada Comparison operators are all the same as C++, but '!=' is written '/='.
+
+You can initialize a boolean with the 'or else' statement. If any of the conditions
+are true, the boolean will be set to true;
+    SomeVariable : BOOLEAN := FALSE or else FALSE or else TRUE or else FALSE;
+
+--------------------------------------------------------------------------------
+Example of Ternary operation:
+    Put(if(TRUE and FALSE) then 8 else 9);
+    Question := FALSE or else FALSE or else TRUE or else FALSE;
+
+--------------------------------------------------------------------------------
+LOOPS
+    Ada has 3 kinds of loops - while, for and infinite. The 'break' statement is 'exit'.
+
+                               loop <...> end loop; 
+   while <BOOLEAN expression>  loop <...> end loop;
+   for <loop index> in <range> loop <...> end loop;
+
+    Loop ranges are specified, "for i in 1..10 loop". Ranges can also be specified with
+    custom range integer variable types.
+    Loops can be names, probably so you can better idenfity what is ending with multiple
+    nested loops. Syntax: "SomeLoopName: for i in 1..10 loop; ... end loop SomeLoopName;
+    A loop variable can be an existing variable, but it will make a copy and not 
+    overwrite the value of the original variable.
+
+--------------------------------------------------------------------------------
+CONDITIONALS
+    Basic Syntax:
+        if(statement) then
+            ...;
+        elsif
+            ...;
+        else
+            ...;
+        end if;
+
+    Special Syntax:
+        if(5 in 1..10) then    -- Checks condition (1 < 5 < 10).
+            ...;
+
+--------------------------------------------------------------------------------
+SWITCH
+    Basic Syntax:
+
+        case Variable is
+            when (Variable value1) => (action);
+            when (Variable value2) => (action);
+            when (Variable value3) => (action);
+            when others            => (action); -- default action
+        end case;
+    
+    Special values:
+
+        case Variable is
+            when 77                 => (Do stuff);  -- Basic value
+            when 1..10              => (Do stuff);  -- Range of values
+            when 5|10|15|20|25|30   => (Do stuff);  -- Specific values ('or' operator)
+            when others             => null;        -- Any other value, do nothing
+        end case;
+
+    The "=>" can be loosely defined as a "do this" operator and is used in various places.
+
+--------------------------------------------------------------------------------
+GOTO (Jumps to a line - usually bad practice). 
+    When Ada was being developed, the developers considered leaving the goto statement 
+    completely out of the language, but it was included for a very nebulous reason. It 
+    was felt that after Ada became a popular language, there would be a need to 
+    translate existing programs from older languages, such as FORTRAN, into Ada using 
+    automatic translators. Such a job would be impossible without the goto statement, 
+    so it was included in the Ada language. Example:
+
+    procedure GoToDemo is
+
+        begin
+           goto Some_Place;
+
+        <<There>>
+           Put_Line("I am now at the There place.");
+           goto Stop_This_Mess;
+
+        <<Where>>
+           Put_Line("I am now at the Where place.");
+           goto There;
+
+        <<Some_Place>>
+           Put_Line("I am now Some_Place.");
+           goto Where;
+
+        <<Stop_This_Mess>>
+           Put_Line("I am now about to end this mess.");
+
+    end GoToDemo;
+
+--------------------------------------------------------------------------------
+FLOATS
+   package Int_IO is new Ada.Text_IO.Integer_IO(INTEGER);
+   use Int_IO;
+   package Flt_IO is new Ada.Text_IO.Float_IO(MY_FLOAT);
+   use Flt_IO;
+
+FLOAT Examples:
+    PI     : constant := 3.1416;    -- Generic float
+    Var    : FLOAT := 1.23456789;   -- Library defined float 
+    type MY_FLOAT is digits 7;      -- Custom float (7 significant digits)
+
+--------------------------------------------------------------------------------
+NEW TYPES    
+    FIXED POINT VARIABLES
+    Variables that have a specific number of digits before and after the decimal.
+    These are useful in certain situations, but it wont say way. Suffice to say
+    Ada supports these types of variables.
+
+        type MY_FIXED is delta 0.1 range -40.0..120.0;
+
+    DECIMAL TYPE
+    Similar to FIXED POINT VARIABLE but also comes with a package that lets you
+    format in a monetary way with dollar signs and stuff.
+
+        type DOLLAR is delta 0.01 digits 8 range 0.00..1_000.00;
+        type DIMES  is delta 0.1  digits 6;
+
+--------------------------------------------------------------------------------
+PROCEDURES
+    An Ada procedure is basically a void function. Only 1 "compiliation" 
+    procedure may be defined per file (like a main() function). Procedures and
+    functions should be defined between "is" and "begin" just like variables;
+    
+    Procedure/function parameters need specifications of "in" or "out" before 
+    the type declaration. "in" means "constant", while "out" is like a reference.
+    Originally you would get an exception if you tried to read an "out" parameter
+    inside of a function, but Ada 95 eased up on that rule. "in" is default. You
+    can also have "in out" to do both. Note, that hard coded parameters 
+    (eg. myFunction(2, 6, 4)) will not compile if the parameters are 'in' type.
+
+    Procedures/functions can have prototypes (no idea why you would need one).
+
+    Procedures can be overloaded. Do not use empty parenthesis for no input
+    parameters. Just leave them off completely. Parameters are called "identifiers".
+
+    Procedures/Functions can be declared inside other procedures/functions much
+    like a class. 
+
+    Procedures may contain return statements, but they dont do anything but end
+    the funcion. It would simply be "return;".
+
+--------------------------------------------------------------------------------
+FUNCTIONS
+    Funtion parameter types are all 'in' (constant). If you want a reference, you
+    will need to use a procedure. That being said, there is no need to use the 
+    key-word 'in' since it is the default anyway. Example of function syntax:
+
+    The data type being returned is declared AFTER the function name and parameters:
+    
+        function SomeFunction(param1 : INTEGER) return INTEGER is
+            <declarations go here>
+        begin
+            <code goes here>
+            return <some integer>;
+        end
+
+    Again, function with no input parameters are called with the function name only.
+    When using nested functions, if you want to access a variable of the parent 
+    function from within a nested function, it is simply treated as a gloabl 
+    varaible for that function. HOWEVER, if the nested function has a variable of
+    the same name as a variable in the parent function, the inner-most variable
+    will be used. You can access the outer variable using the function's name + dot +
+    variable name:
+
+        OuterFunction.Variable
+
+    Basically it works the same way that you would access directories in bash but
+    with dots instead of forward slashes only you can't access variable in more
+    inner functions:
+    
+        $OuterDirectory/MiddleDirectory/InnerDirectory/File
+        Put(OuterFunction.MiddleFunction.InnerFunction.Variable)
+
+    ANONYMOUS FUNCTIONS are called "Ada blocks" and are executed upon delcaration. 
+    They are declared using keywords 'declare', 'begin' and 'end':
+
+        BlockLabel:
+        declare
+            SomeVariable : INDEX := 5;
+        begin
+            Put(SomeVariable);
+        end BlockLabel;
+
+--------------------------------------------------------------------------------
+PROCEDURE/FUNCTION OVERLOADING
+   Similar to C++, functions can be overloaded by assigning parameters a default
+   value. Ada offers a little more flexibility. Example:
+
+      procedure Overloaded is(Param1 : INTEGER := 7;
+                              Param2 : INTEGER := 65;
+                              Param3 : INTEGER := 3911;
+                              Param4 : INTEGER := 123456) is
+      begin
+         <code>
+      end Overloaded;
+
+      ...
+      
+      Overloaded(8, 3, 4, 55);                -- Normal hard-coding of parameters.
+      Overloaded(7, 9);                       -- Will only replace the first 2 parameters.
+      Overloaded(Param4 => 90, Param1 => 278) -- Will replace params 1 and 4.
+      Overloaded(Param3 => Varaible + 56)     -- Variables and math are ok.
+    
+      RULES:
+      * You should not combine hard-coding with parameter selecting. Hard-coding
+        relies on the position, but that can get jacked up if you use naming.
+      * 'out' parameters (pass by reference) cannot have a default value set.
+
+--------------------------------------------------------------------------------
+ARRAYS
+    Examples of declaring an array:
+
+        MyArray1 : array(INTEGER range 1..7)       of BOOLEAN;
+        MyArray2 : array(CHARACTER range 'A'..'E') of INTEGER;
+        type MyArray3 is array(-4..8) of FLOAT;
+        SomeArray : MyArray3;
+
+    Meanings: 
+       MyArray1 is an array of 7 elements with integer keys and boolean values.
+       MyArray2 is an array of 5 elements with char keys and int values.
+       MyArray3 is a custom type of array with 12 elements with int keys and floats values.
+
+    If the key type is not declared, it defaults to INTEGER as seen in MyArray3.
+    The default only works though it the range is numerical. Assign elements:
+
+        SomeArray(3) := False;  MyArray2('C') := 3712;  MyArray3(-2) := 3.14159;
+
+    Uninitialized array int elements are set to 0 by default. Chars are "". You 
+    do not have to initialize preceding elements, but they can be assigned in
+    any order. Example to assign values to array elements:
+
+        MyArray2(2) := 43; 
+        SomeArray(-1..5) := (84, 66, 123, 87, 11, 3712, 505);
+        NewArray : MyArray3 := (2 => 555, 1 => 456, 4 => 987, 3 => 111);
+        RangeNamed : MyArray3 := (2..4 => 13, 1 | 5..7 => 27, 8..10 => 25, others => 3712);
+
+    The key indexes follow your declared range and do not always have to start at '0'. 
+    The second example above also shows how you would slice an array. 
+    The 3rd example shows how you can set values to specific indexes.
+    The 4th example shows how to fill ranges of indexes with the same numbers.
+    'others' is the default value and must be last in the declaration.
+
+    When you have 2 arrays involved where you want to slice one into the other
+    it would look like:
+
+        MyArray4(5..8) := MyArray(1..4);
+
+    Below is the syntax to print an array using a range-based 'for' loop. 
+    Note the keyword 'of' and not 'in'.
+
+        for i of MyArray loop
+            Put(i);
+        end loop;
+
+    You can "rename" elements in the array, which is basically just making a 
+    pointer to them. You can call/set MyArray('C') using that syntax, or the 
+    'PointerName' variable.
+    
+        PointerName := INTEGER renames MyArray2('C');
+
+    Arrays that are created as a 'type' (see above) have advantages. You can set
+    one equal to the other and even compare arrays with nothing more than a '='.
+    No need for iterating and comparing each individual element. When an array
+    is not a type, it is considered an 'anonymous type'. You can still compare
+    and set anonymous types if you first cast them as a type.
+
+    Remember to utilize the tools to specify array positions:
+
+        for i in 1..Array'LAST(1) loop
+
+    The (1) at the end states that it is 1 dimensional. Use a 2 + for multi
+    dimensions. It is almost like saying (1) is 'i', (2) is 'j', etc.
+
+    Multi-dimensional array syntax:
+        
+        procedure MultiArray is
+           type Matrix is array(INTEGER range 1..5, INTEGER range 1..5) of INTEGER;
+           Board : Matrix := (
+              ( 1,  2,  3,  4,  5), 
+              ( 6,  7,  8,  9, 10), 
+              (11, 12, 13, 14, 15), 
+              (16, 17, 18, 19, 20), 
+              (21, 22, 23, 24, 25)
+              );
+        begin
+
+           for i in 1..5 loop 
+              for j in 1..5 loop
+              null;
+                 Put(Board(i, j), 4);
+              end loop;
+                 New_Line;
+           end loop;
+
+        end MultiArray;
+
+    Note: If you set up your multi-array like such:
+
+        type MyArray is array(1..5) of INTEGER;
+        type Matrix is array(1..5) of MyArray;
+
+    Then you need to get values with "Put(Board(i)(j));"
+
+   Enums are basically arrays and are easier to declare:
+      type Day is (Mon, Tue, Wed, Thu, Fri, Sat, Sun);
+   Arrays can almost do anything enums can do, but you need an enum to declare a
+   true associative array:
+      type Hours1 : Array(Day) of Float; 
+      type Hours2 : Array(Tue..Thu) of Float;
+
+----------------------------------------------------------------------------------
+STRINGS
+   A string is simply an array of CHARACTER type and behaves like a normal 
+   array with a few added features.
+
+   Ada strings are set by value and not by reference. This means that in order
+   to set a string variable, you must set it to the exact buffer size or you
+   will get a compile error. They admit this is a pain of the language. 
+
+   Strings work with the suffixes, "SUCC", "FIRST", "LAST".
+   
+   String declaration examples:
+      Line     : STRING(1..33);
+      NAME     : constant STRING := ('J','o','h','n');		-- Array of chars
+      JOB      : constant STRING := "Computer Programmer";	-- Auto detects length
+      Address  : STRING(1..13) := "Anywhere, USA";		-- Set to exact length
+      Letter   : CHARACTER;
+      EXAMPLE1 : constant STRING := "A";                        -- A string of length 1  
+      EXAMPLE2 : constant STRING := "";                         -- An empty string
+
+   String Concatenation Example:
+      MyString := "CAT" & "FISH";	                        -- CATFISH
+      Put_Line("Hello" & "World!");				-- Hello World!
+
+      String7 := "Go" & Ada.Characters.Latin_1.CR &             -- Go   (Single variable that prints on 2 lines)
+                  Ada.Characters.Latin_1.LF & "Car";            -- Car
+
+--------------------------------------------------------------------------------
+RECORDS
+   An Ada "record" is a 'struct'. Declaration example:
+
+      procedure Struct is
+         type MyRecord is
+            record
+               Var1 : INTEGER;
+	           Var2 : STRING(1..5);
+               Var3 : BOOLEAN;
+            end record;
+       
+         Object1 : MyRecord;
+    
+      begin
+    
+         Object1.Var1 := 3712;
+         Object1.Var2 := "Hello";
+         Object1.Var3 := True;
+    
+         Put_Line(Object1.Var2);
+         Put(Object1.Var1, 2);
+         New_Line;
+         Put(Object1.Var3);
+
+         -- Output: 
+	     --    Hello
+         --    3712
+         --    True
+    
+      end Struct;
+
+   Alternatively to the typical C++ definitions of members in classes and structs,
+   you can set the variables of Ada objects this way:
+
+      Object1 := (Var3 => 3911, Var1 => "World", Var2 => False);   -- If you do this, ALL variables must be defined
+      Object1 := (2345, "Doggy", True);  -- Fills in member variables, but must be in order.
+
+   * Anonymous record types are not allowed. You must use the 'type' keyword.
+   * Objects of the same record type can be compared and copied.
+   * Records can contain data types that are other records (objects).
+   * Selecting attributes of nested objects is called "selected component notation".
+   * Component notation can be aliased, but aliases should be used sparingly:
+
+	AliasedValue : INTEGER renames Object.NestedObject.Value;
+
+   * You can add a constructor attribute simply by adding parenthesis:
+
+	type MyRecord(X : INTEGER) is
+	...
+
+------------------------------------------------------------------------------------------
+Access Type Variables (Pointers)
+   Syntax example:
+
+      procedure Access is 
+
+         type PointerIntType is access INTEGER;
+         type PointerFloatType is access FLOAT;
+
+         MyPointer1, MyPointerType2 : PointerIntType;
+         MyPointer3 : PointerFloatType;
+         
+      begin
+      
+         MyPointer := new INTEGER;
+         MyPointer.all := 3712;			 -- Points to this value
+
+         MyPointer3 := new FLOAT'(3.141592654);  -- Alternate way to initialize
+
+         MyPointer2 := MyPointer;		 -- Links the addresses. All additional changes transfer.
+
+      end Access;
+
+   * Pointers (Access variables) will rarely every point to anything besides records (objects).
+   * Comparison operators can be used with pointers to records if the type matches.
+   * Ada has not garbadge collector so you must use destructors. Example:
+
+      procedure Free is new 
+         Ada.Unchecked_Deallocation(MyRecord, MyPointer);   -- Define destructor with
+                                                            -- record/pointer types.
+      ...
+
+      Free(MyObject)        -- destroys object
+      MyPointer := null;    -- sets pointer to point at nothing
+
+   Creating arrays of pointers (accessors) is much like what you would think with an exception:
+
+      for i in 1..10 loop
+         MyArray(i) := new MyRecordType;
+         MyArray(i).all := MyPremadeObject.all;  
+         -- Or:
+         MyArray(i).all := (Var1 => 10, Var2 => "Bunny", Var3 => False);
+
+   Pointers can also access static objects and subprograms but there is a lot of additional
+   syntax involved. Not going to go into that now, so look it up if you need it.
+
+-------------------------------------------------------------------------------------
+OUTPUT TO A FILE
+
+   procedure OutputToFile is
+
+      SomeFileVariable : FILE_TYPE;
+
+   begin
+
+      Create(SomeFileVariable, Out_File, "test.txt");
+
+      Put_Line(SomeFileVariable, "I am outputting a line to a file.");
+      Put(SomeFileVariable, "It works with either 'PUT' function and 'New_Line'.");
+      New_Line(SomeFileVariable, 2);
+
+      Set_Output(SomeFileVariable);       
+      Put_Line("This defaults all outputs to the file instead of the screen.");
+      Set_Output(Standard_Output); 
+      Put_Line("And now the default output is reverted back to the screen.");
+
+      Close(SomeFileVariable);   -- Dont forget to close your file!
+
+   end OutputToFile; 
+
+   * The 'Out_File' above is a temp buffer which is not saved. Ada needs 2 files to perform this action.
+
+    Read from a file example:
+	https://perso.telecom-paristech.fr/pautet/Ada95/e_c14_p4.ada
+
+-------------------------------------------------------------------------------------
+PACKAGES (Classes)
+
+Basic Example:
+
+	-- Header file with prototypes. 
+        -- In C++ this is the '.h' file. In Ada, it is an '.ads' file.
+	package MyPackage is
+	   procedure DoSomething(Var : in INTEGER);
+	end MyPackage
+
+
+	-- Body file with function definitions.
+        -- In C++ this is the .cpp file. In Ada, it is an '.adb' file.
+	package body MyPackage is			
+	   procedure DoSomething(Var : in INTEGER) is
+           begin
+	      Put("Your integer input: ")
+              Put(Var);
+	   end DoSomething;
+	end MyPackage
+
+   * Package (class) names should match the file name because of the way Ada
+     links and compiles. It will cause problems if they do not match.
+   * You need to use 'with' and 'use' for any packages that use other packages. 
+     Header guards are not needed if you have excessive use/with statements.
+   * 'Use' is basically a namespace. Without it, you need "MyPackage.DoSomething".
+     You would also need the package prefix for types if not using 'use'. 
+   * Package sections are 'public' by default but can be set as private just by adding
+     the keyword 'private'. Individual variables can also be set to 'is private'.
+     There are also other restriction types such as 'limited' and 'limited private'
+     which you can read up on if you ever need to create elaborate packages.
+
+-------------------------------------------------------------------------------------
+EXCEPTION HANDLING
+   Along with the 'begin' and 'end' sections of procedures and functions, there are 
+   other types such as 'exception' that handle certain cases in the same manner that
+   C++ 'try/catch/except' works. Example:
+
+      procedure DoStuff is
+         <Variable definitions>
+         ...
+      begin
+         <some code>
+         ...
+      exception
+         when <exception name> => <more code>;  
+      end DoStuff;
+
+   * Exceptions are 'raised' at runtime and the name of the exception will be shown
+     and the end of the run such as 'raised CONSTRAINT_ERROR'.
+   * 4 defined errors: 
+       Constraint_Error - This will occur if something goes out of its assigned range.
+       Program_Error - This will occur if we attempt to violate an Ada control structure such as dropping through the bottom of a function without a return.
+       Storage_Error - This will occur if we run out of storage space through either recursive calls or storage allocation calls.
+       Tasking_Error - This will occur when attempting to use some form of tasking in violation of the rules.
+   * A catch-all name for an exception is 'others' ( when others => <code> ). Must be last line.
+   * You can break down exception information with the 'Ada.Exceptions' package.
+      Ada.Exceptions.EXCEPTION_OCCURRENCE - data type to set variable
+      Ada.Exceptions.Exception_Name(<variable>) - Displays exception type
+      Ada.Exceptions.Exception_Information(<variable>) - Displays exception information.
+
+
+   Create a custom exception and manually raise it. Example:
+
+      procedure DoStuff is
+         MyCustomException : exception;
+         X : INTEGER := 5;
+      begin
+         if(X = 5) then
+            raise MyCustomException;
+         end if;
+      exception
+         when MyCustomException => Put("My custom exception raised!");
+      end DoStuff;
+   
+   It is possible that exception handling can allow a program to continue. To 
+   do this, the problem code must be called from another procedure that has 
+   exception handling implemented. It could also be called from a block. Example:
+
+      procedure RunningProgram is
+
+         procedure BreakMe(X : in INTEGER) is
+            Kill : exception;
+         begin
+            if X = 6 then
+               raise Kill;
+            else
+               Put(X, 4);
+            end if;
+         end BreakMe;
+  
+      begin   
+         for i in 1..10 loop
+            declare begin      -- This anon function (Ada block) wraps the excepting 
+               breakMe(i);     -- procedure and handles the exception.
+            exception
+               when others => Put_Line("Exception detected, but program will continue...");
+            end;
+         end loop;
+      end RunningProgram;
+
+--------------------------------------------------------------------------------
+OPERATOR OVERLOADING
+   Just like in C++, operator overloading allows for manipulation of normal 
+   operators (+, -, /, *) to interact with objects (records). Example: 
+
+      function "+"(Object1 : RecordType; Object2 : RecordType) return RecordType is
+         TempObject : RecordType;
+      begin
+         TempObject.Property1 := Object1.Property1 + Object2.Property1;
+         TempObjec'digit.Property2 := Object1.Property2 - Object2.Property2;
+         TempObject.Property3 := Object1.Property3 * Object2.Property3;
+         return TempObject;
+      end "+";
+
+   To use, simply add the objects: AnotherObject := Object1 + Object2;
+
+--------------------------------------------------------------------------------
+INHERITANCE 
+   Basic inheritance example:
+
+      type ChildRecord is new ParentRecord;
+
+   * Variables labeled 'private' will not be accessable to child classes unless 
+     other key words are used such as 'tagged' - eg. "type SomeType is tagged 
+     private".
+   * Creating a polymorphic function requries the keyword 'with'. Example:
+
+      type ParentType is tagged private;
+      type ChildType is new ParentType with private;
+
+      <code...>
+
+      private
+         type ParentType is tagged
+            record
+               Variable1 : INTEGER;
+               Variable2 : INTEGER;
+            end record;
+
+         type ChildType is new ParentType with
+            record
+               Variable3 : INTEGER;
+               Variable4 : INTEGER;
+            end record;
+
+   * You can modify a child type as much as you want until a variable is 
+     declared using it. After that, it is "Frozen" because you cannot have 
+     varying attributes of the same type.
+   * Ada class definition: Any hierarchy of types compose a 'class' with the 
+     class name being the name of the highest class in the hierarchy.
+
+   Packages can have procedures that are automatically called under certain 
+   circumstances such as when an object is initialized, when it is changed, 
+   and when the object needs to be destroyed (destructor). To do this:
+
+   1.) Include/Use Ada.Finalization package in your header.
+   2.) When declaring the object to be governed, use the keyword 'CONTROLLED':
+           type SomeType is new CONTROLLED with
+   3.) Add procedures named "Initialize", "Adjust", and "Finalize" with a 
+       parameter of the object they will be governing.
+   4.) Add code to the above procedures that you want executed as needed.
+   
+   * Note: 'Adjust' is only called when the entire object is set, not just one
+     of its individual properties.
+   
+

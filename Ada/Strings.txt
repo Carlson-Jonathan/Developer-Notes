@@ -1,0 +1,74 @@
+STRINGS
+   A string is simply an array of CHARACTER type and behaves like a normal 
+   array with a few added features.
+
+   Ada strings are set by value and not by reference. This means that in order
+   to set a string variable, you must set it to the exact buffer size or you
+   will get a compile error. They admit this is a pain of the language. 
+
+   Strings work with the suffixes, "SUCC", "FIRST", "LAST".
+   
+   String declaration examples:
+      Line     : STRING(1..33);
+      NAME     : constant STRING := ('J','o','h','n');		-- Array of chars
+      JOB      : constant STRING := "Computer Programmer";	-- Auto detects length
+      Address  : STRING(1..13) := "Anywhere, USA";		-- Set to exact length
+      Letter   : CHARACTER;
+      EXAMPLE1 : constant STRING := "A";     			-- A string of length 1  
+      EXAMPLE2 : constant STRING := "";      			-- An empty string
+
+   String Concatenation Example:
+      MyString := "CAT" & "FISH";	                        -- CATFISH
+      Put_Line("Hello" & "World!");				-- Hello World!
+
+      String7 := "Go" & Ada.Characters.Latin_1.CR & 		-- Go   (Single variable that prints on 2 lines)
+                  Ada.Characters.Latin_1.LF & "Car";   		-- Car
+
+--------------------------------------------------------------------------------
+RECORDS
+   An Ada "record" is a 'struct'. Declaration example:
+
+      procedure Struct is
+         type MyRecord is
+            record
+               Var1 : INTEGER;
+	       Var2 : STRING(1..5);
+               Var3 : BOOLEAN;
+       	    end record;
+       
+         Object1 : MyRecord;
+    
+      begin
+    
+         Object1.Var1 := 3712;
+         Object1.Var2 := "Hello";
+         Object1.Var3 := True;
+    
+         Put_Line(Object1.Var2);
+         Put(Object1.Var1, 2);
+         New_Line;
+         Put(Object1.Var3);
+
+         -- Output: 
+	 --    Hello
+         --    3712
+         --    True
+    
+      end Struct;
+
+   Alternatively to the typical C++ definitions of members in classes and structs,
+   you can set the variables of Ada objects this way:
+
+      Object1 := (Var1 => 3911, Var2 => "World", Var3 => False);   -- If you do this, ALL variables must be defined
+
+   * Anonymous record types are not allowed. You must use the 'type' keyword.
+   * Objects of the same record type can be compared and copied.
+   * Records can contain data types that are other records (objects).
+   * Selecting attributes of nested objects is called "selected component notation".
+   * Component notation can be aliased, but aliases should be used sparingly:
+	
+	AliasedValue : INTEGER renames Object.NestedObject.Value;
+
+
+   
+

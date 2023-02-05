@@ -1,0 +1,17 @@
+
+Information about viewing the system log journal to see errors and stuff:
+https://forums.linuxmint.com/viewtopic.php?f=42&t=223066
+
+Common command: journalctl -b (add -1, -2, -3 to view different boots, 1 being 
+the last before the crash).
+
+Logs from my last crash. It appears that "sendMail" was the culprit.
+    Aug 15 13:41:01 JonsComputer sm-msp-queue[29386]: unable to qualify my own domain name (JonsComputer) -- using short name
+    Aug 15 14:00:01 JonsComputer sm-msp-queue[29879]: My unqualified host name (JonsComputer) unknown; sleeping for retry
+
+===============================================================================
+
+If the system freezes, try CTRL + ALT + F2 to get the command terminal.
+Try Windows + Alt + (R,E,I,S,U,B) in that order to see if something happens.
+
+

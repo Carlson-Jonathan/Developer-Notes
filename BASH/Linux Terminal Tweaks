@@ -1,0 +1,8 @@
+(Ubuntu)
+Toggles the position of the launcher bar from left side to bottom. Change "Bottom" to "Left" to switch.
+    gsettings set com.canonical.Unity.Launcher launcher-position Bottom
+
+(Mint)
+Create an shortcut to a folder on your desktop (source file/ /desktop location)
+ln -s /media/jonathan/2TBHD/Jon/ /home/jonathan/Desktop/
+
