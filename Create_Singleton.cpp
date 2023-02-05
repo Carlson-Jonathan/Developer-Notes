@@ -14,7 +14,7 @@ using namespace std;
     
 class Singleton {
 public:
-    Singleton(const Singleton& obj)	= delete; // 1.) Delete the copy constructor.
+    Singleton(const Singleton& obj) = delete; // 1.) Delete the copy constructor.
 
     static Singleton* getInstance() {         // 2.) Set a static getter.
     	if(!instancePtr)                       
