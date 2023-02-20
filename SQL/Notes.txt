@@ -1,0 +1,15 @@
+Random things I learned about PostgreSQL:
+
+* sudo service postgresql status (check server status)
+* postgres port = 5432
+* Port number and incomming connections can be modified in file:
+	/etc/postgresql/<version number>/main/postgresql.conf
+
+* You can tweak connection permissions (local and incomming) in file 'pg_hba.conf' (same directory)
+* md5 and scram-sha-256 are encryption methods. Set to 'trust' to prevent password authentication.
+* To add an incomming connection from a specific computer, add line under IPv4:
+	host	all	all	<ip address>/32		<encryption type>
+	
+* pgAdmin4 is a GUI database admin program like PEM. Access with URL '<ip address>/pgAdmin4'
+* PostgreSQL's offical C++ interface library is 'lpqxx'
+	g++ postgres.cpp -lpqxx -lpq	(compile command)

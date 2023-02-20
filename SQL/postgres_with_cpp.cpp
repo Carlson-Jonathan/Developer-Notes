@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// Compile with
+//	 g++ postgres_with_cpp.cpp -lpqxx -lqp
+
 int main(int argc, char* argv[]) {
 
    // Connect To Database.
