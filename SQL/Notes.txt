@@ -13,3 +13,6 @@ Random things I learned about PostgreSQL:
 * pgAdmin4 is a GUI database admin program like PEM. Access with URL '<ip address>/pgAdmin4'
 * PostgreSQL's offical C++ interface library is 'lpqxx'
 	g++ postgres.cpp -lpqxx -lpq	(compile command)
+	
+* Connect to a remote psql server in the terminal with:
+	psql -h <remote IP address> -p <port num> -d <database> -U <user name>
