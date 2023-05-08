@@ -1,0 +1,31 @@
+Change to another user account:
+    su <username>
+    
+Create a new user:
+    sudo adduser <username>
+    sudo adduser --create-home <username>   (to generate their home folder)
+
+Create a new Group:
+    groupadd <group name>
+
+Allow a user access to a group:
+    sudo usermod -aG <groupname> <username>
+    
+View all groups that a user is a part of:
+    groups
+    
+View all groups that exist and who has access to them:
+    getent group
+    
+Remove a user's access to a group:
+    sudo gpasswd -d <username> <groupname>
+    
+Make a file/directory part of a group:
+    sudo chgrp <groupname> <directory>
+    
+Remove a file/directory from a group:
+    sudo chgrp -R <groupname> <directory>
+    
+Remove a user:
+    sudo userdel <username>  
+    sudo userdel -r <username>  (removes all files/folders belonging to that user)

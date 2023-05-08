@@ -1,0 +1,8 @@
+1.) Install Samba
+    sudo apt-get install samba
+2.) Allow access through firewall
+    sudo ufw allow Samba
+3.) Add users/passwords to access the shared system
+    sudo smbpasswd -a <username>
+4.) Create folder and set permissions/sharing status
+
