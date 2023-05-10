@@ -1,0 +1,4 @@
+alias clean='rm -rf [bin] build MakeFile *.out *.ghc cmake_install.cmake CMakeFiles CMakeCache.txt'
+alias build="cmake -H. -Bbuild && cmake --build build -- -j3"
+alias run="./[bin]/Main.out"
+alias update="cmake --build build -- -j3"

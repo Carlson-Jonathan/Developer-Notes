@@ -1,0 +1,27 @@
+#include "optionalCode.h"
+
+void OptionalCode::aboutOption() {
+    cout << "OPTIONAL CODE:\n\n"
+         << "   There is a simple function in CMake called 'Option' which allows you to set and\n"
+         << "   toggle a boolean on and off. This is a very simple function, but allows you do\n"
+         << "   some neat tricks, like decide whether or not some code, or even an entire\n"
+         << "   directory gets built. This would be useful for unit tests and various\n"
+         << "   non-essential, optional code. In this example, we can toggle whether or not\n"
+         << "   the code in the 'optionalSubDir' gets built. This is how it works:\n\n"
+         << "   1.) We create a CMake boolean: 'option(OPTION_FILES 'Random comment goes here' ON)'\n"
+         << "   2.) Create a 'if' wrapper using this boolean that adds the libraries, includes, and\n"
+         << "       subdirectories to lists only if the boolean is 'ON' (true). These lists are then\n"
+         << "       added to the 'target_' functions as arguments. If the lists are empty, nothing\n"
+         << "       happens, otherwise whatever is in them gets built.\n"
+         << "   3.) Inside your 'if' wrapper, use 'add_definitions(-DOPTIONS_ON)'. This creates a\n"
+         << "       boolean in the C++ pre-processor that you can check using '#ifdef' wrappers. Note\n"
+         << "       the '-D' preceeding the variable name in the function.\n"
+         << "   4.) Modify your C++ code so it ignores any optional sections.\n"
+         << "       a.) If you have optional '#include's, wrap them in '#ifdef OPTIONS' ... '#endif'\n"
+         << "       b.) Any places where optional code is used should be wrapped in the same '#ifdef'\n"
+         << "           wrappers. Note that you can also use the header guard definitions as well as\n"
+         << "           CMake defined booleans.\n\n"
+         << "   Now try toggling the 'OPTION_FILES' in CMakeLists.txt to OFF. This entire section on\n"
+         << "   OPTIONAL CODE will dissapear! Note that it only works if you clean before you\n"
+         << "   re-build. This is because it only checks the source code for changes, not CMake files.\n\n\n";
+};
