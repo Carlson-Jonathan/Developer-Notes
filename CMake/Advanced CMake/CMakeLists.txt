@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26.2)                 # Should always be the first line
+cmake_minimum_required(VERSION 3.22)                   # Should always be the first line
 project(MyNewCmake VERSION 1.0)                        # Name of project. Version optional. Affects output files.
 
 set(CMAKE_BINARY_DIR       ${CMAKE_SOURCE_DIR}/[bin])  # Set Directories
