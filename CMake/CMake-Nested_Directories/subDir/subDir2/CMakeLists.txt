@@ -2,7 +2,7 @@ add_subdirectory(subDir3)
 
 add_library(NEWTARGET2_LIBS STATIC
     newTarget2.cpp
-    subDir3/newTarget3.cpp
+    ${NEWTARGET2_LIBS}
 )
 
 target_include_directories(Main.out PRIVATE
