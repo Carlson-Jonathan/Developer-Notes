@@ -5,13 +5,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
 add_executable(Main.out main.cpp)
+add_subdirectory(subDir)                         # Reads the CMakeLists.txt file of this directory
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/subDir)    # reads the CMakeLists.txt file from here
-
-target_include_directories(Main.out PRIVATE     # Where to look for header files.
-    ${CMAKE_SOURCE_DIR}/subDir
-)
-
-target_link_libraries(Main.out                  # Where to look for source files.
-    NEWTARGET_LIBS                              # (This var is created in the next folder down)
+target_link_libraries(Main.out PRIVATE           # Where to look for source files.
+    NEWTARGET1_LIBS                              # Links child's libraries to executable (the next folder down)
 )
