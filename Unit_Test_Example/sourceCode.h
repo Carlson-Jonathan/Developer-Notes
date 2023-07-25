@@ -12,6 +12,7 @@ using namespace std;
 
 class VanillaUnitTests; // Required for unit testing private functions in C++.
 class GoogleTests;
+class UnitTestPlusPlus;
 
 class SourceCode {
 private:
@@ -22,5 +23,6 @@ private:
 
     friend VanillaUnitTests; // Required for unit testing private functions in C++.
     friend GoogleTests;
+    friend UnitTestPlusPlus;
 };
 #endif // SOURCECODE_H

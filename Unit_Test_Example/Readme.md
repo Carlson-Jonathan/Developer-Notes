@@ -1,6 +1,6 @@
-This is a brief tutorial with examples of unit testing. There are two kinds of
-C++ unit test methods- one using only C++ code and the other using Google Test.
-In either folder compile the unit tests using CMake and run the .out file:
+This is a brief tutorial with examples of unit testing. There are three kinds of
+C++ unit test methods- one using only C++ code another using Google Test, and
+a third using UnitTest++. In any folder, compile the unit tests using CMake and run:
     - mkdir build
     - cd build
     - cmake ..
@@ -31,7 +31,7 @@ Un-testable (unit testable) functions
 
 ---------------------------------------------------------------
 
-Google Test Installation for Linux:
+Google Test Installation (Pretty much the same for UnitTest++):
 1.) Clone the repository: https://github.com/google/googletest
 2.) cd into the repository and build
     - mkdir build
