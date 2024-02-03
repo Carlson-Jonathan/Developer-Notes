@@ -3,17 +3,22 @@ project(MyProject)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-add_library(Math STATIC ${CMAKE_SOURCE_DIR}/src/math.cpp)
+add_library(Math SHARED ${CMAKE_SOURCE_DIR}/src/math.cpp)
 
 add_executable(Main.out main.cpp)
 
 set(LIBS
-    ${CMAKE_SOURCE_DIR}/lib/libSecret.so # Link a pre-built shared library (no source code)
-    Math                                 # Link the static library we just created above
+    ${CMAKE_SOURCE_DIR}/build/libSecret.so # Link a pre-built shared library (no source code)
+    Math                                   # Link the static library we just created above
 )
 
 target_link_libraries(Main.out PRIVATE 
     ${LIBS}
+)
+
+set_target_properties(Main.out PROPERTIES
+    INSTALL_RPATH "\$ORIGIN"
+    BUILD_WITH_INSTALL_RPATH TRUE
 )
 
 target_include_directories(Main.out PRIVATE 
@@ -23,7 +28,6 @@ target_include_directories(Main.out PRIVATE
 target_include_directories(Math PRIVATE 
     ${CMAKE_SOURCE_DIR}/include
 )
-
 
 # 'target_include_directories()' assigns directories with header files to specific individual targets.
 # Therefore it must be called once per target as seen above. On the other hand you can use

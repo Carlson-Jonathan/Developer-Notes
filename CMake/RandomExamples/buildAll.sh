@@ -2,6 +2,7 @@
 clear
 mkdir build 2> /dev/null
 cd build
+cp ../lib/libSecret.so .
 echo "Running 'cmake ..'"
 cmake ..
 echo; echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; echo

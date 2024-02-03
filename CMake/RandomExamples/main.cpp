@@ -8,12 +8,11 @@ int main() {
     cout << "Hello world!" << endl;
 
     Math object;
-    cout << "8 + 4 = " << object.add(4, 8) << endl;
+    cout << "6 + 2 = " << object.add(6, 2) << endl;
 
     cout << "CMake variable: " << CMAKE_VARIABLE << endl;
     cout << "Here is a secret message:\n"; 
     Secret::message();
-    
 
     return 0;
 }
