@@ -1,0 +1,24 @@
+grep "example" my.txt              — search for “example” in “my.txt”
+grep "example" *.txt               — search for “example” in all “.txt” files
+grep -i "example" my.txt           — search for “example” while ignoring cases
+grep -c "example" my.txt           — count # of lines that contain “example”
+grep -n "example" my.txt           — show line numbers along with matched lines
+grep -r "example" .                — search for “example” in all files recursively
+grep -v "example" my.txt           — display lines that do not contain “example”
+grep -w "example" my.txt           — search for lines containing “example” as a full word
+grep -e "key1" -e "key2" my.txt    — show lines containing either pattern
+grep -v -e "key1" -e "key2" my.txt — show lines containing neither pattern
+grep "key1" "key2" my.txt          — display lines contain both “key1” and “key2”
+grep -E "error|warning" app.log    — use extended regex for matching
+grep -E "^[a-zA-Z]" my.txt         — another extended regex example
+grep -m3 "keyword" my.txt          — limit grep output to a fixed number of lines
+grep -A2 -B2 "example" my.txt      — show 2 lines before and after match
+grep -C3 "error" server.log        — show 3 lines before and after match
+grep -x "spoofing" my.txt          — show lines that exactly match a string
+grep -l "example" *                — display file names that match the pattern
+grep ^"hello" my.txt               — show all lines that start with “hello”
+grep "done$" my.txt                — show all lines that end with “done”
+grep -o "begin.*end" my.txt        — show only the matched string
+grep --color "example" my.txt      — display matches with color
+grep "[0-9]" my.txt                — show all lines that contain any digits
+grep -a "string" my.bin            — search for a string in a binary file
